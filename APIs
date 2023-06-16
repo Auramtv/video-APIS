@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carga un video y reprodúcelo</title>
+  <style>
+    body {
+      background-color: #f1f1f1;
+    }
+
+    #videoContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: 50px;
+      position: relative;
+    }
+
+    #videoPlayer {
+      width: 640px;
+      height: 360px;
+      background-color: #000;
+      margin-bottom: 10px;
+    }
+
+    .buttonContainer {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .buttonContainer button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Carga un video y reprodúcelo</h1>
+  <input type="file" id="videoInput" accept="video/*">
+  <br><br>
+  <div id="videoContainer">
+    <video id="videoPlayer"></video>
+    <div class="buttonContainer">
+      <button id="playButton">Reproducir</button>
+      <button id="pauseButton">Pausar</button>
+      <button id="volumeDownButton">Bajar volumen</button>
+      <button id="volumeUpButton">Subir volumen</button>
+    </div>
+  </div>
+  <br><br>
+  <div id="loadingMessage" style="display: none;">Cargando vídeo...</div>
+  <div class="aviso">
+    <!-- <p>La operación puede demorarse unos minutos.</p> -->
+  </div>
+
+  <script>
+    const videoInput = document.getElementById('videoInput');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const playButton = document.getElementById('playButton');
+    const pauseButton = document.getElementById('pauseButton');
+    const volumeDownButton = document.getElementById('volumeDownButton');
+    const volumeUpButton = document.getElementById('volumeUpButton');
+    const loadingMessage = document.getElementById('loadingMessage');
+    const videoContainer = document.getElementById('videoContainer');
+  
+    let mediaSource = null;
+    let sourceBuffer = null;
+  
+    videoInput.addEventListener('change', function() {
+      const file = videoInput.files[0];
+      if (file && file.type.includes('video')) {
+        const fileURL = URL.createObjectURL(file);
+        videoPlayer.src = fileURL;
+        loadingMessage.style.display = 'block';
+        videoContainer.style.display = 'block';
+  
+        
+        videoPlayer.addEventListener('loadedmetadata', function() {
+          loadingMessage.style.display = 'none';  
+          
+          const videoWidth = videoPlayer.offsetWidth;
+          const containerWidth = videoContainer.offsetWidth;
+          const marginLeft = (containerWidth - videoWidth) / 2;
+          videoPlayer.style.marginLeft = marginLeft + 'px';
+        });
+      } else {
+        alert('Por favor, selecciona un archivo de vídeo válido.');
+      }
+    });
+  
+    playButton.addEventListener('click', function() {
+      videoPlayer.play();
+    });
+  
+    pauseButton.addEventListener('click', function() {
+      videoPlayer.pause();
+    });
+  
+    volumeDownButton.addEventListener('click', function() {
+      if (videoPlayer.volume > 0) {
+        videoPlayer.volume -= 0.1;
+      }
+    });
+  
+    volumeUpButton.addEventListener('click', function() {
+      if (videoPlayer.volume < 1) {
+        videoPlayer.volume += 0.1;
+      }
+    });
+  </script>
+  
